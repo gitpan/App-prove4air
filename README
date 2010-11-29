@@ -3,18 +3,24 @@ NAME
     tap4air
 
 VERSION
-    version 0.0010
+    version 0.0011
 
 SYNOPSIS
-    $ git clone git://github.com/robertkrimen/tap4air.git tap4air $ export
-    BUILD_AIR="$AIR_SDK/bin/mxmlc -incremental +configname=air
-    -compiler.source-path=tap4air/src/ -debug" $ export
-    RUN_AIR="$AIR_SDK/bin/adl" $ prove4air test.as $ prove4air t/*.as $
-    prove4air t/
+        $ git clone git://github.com/robertkrimen/tap4air.git tap4air
+        $ export BUILD_AIR="$AIR_SDK/bin/mxmlc -incremental +configname=air -compiler.source-path=tap4air/src/ -debug"
+        $ export RUN_AIR="$AIR_SDK/bin/adl"
+        $ prove4air test.as
+        $ prove4air t/*.as
+        $ prove4air t/
 
 DESCRIPTION
     App::prove4air integrates with App::Prove and tap4air to provide
     prove-like TAP-testing in Adobe Air
+
+SEE ALSO
+    <http://github.com/robertkrimen/tap4air>
+
+    App::Prove
 
 AUTHOR
     Robert Krimen <robertkrimen@gmail.com>

@@ -30,7 +30,7 @@ my %WriteMakefileArgs = (
     'IPC::System::Simple' => '0',
     'Path::Class' => '0'
   },
-  'VERSION' => '0.0010',
+  'VERSION' => '0.0011',
   'test' => {
     'TESTS' => 't/*.t'
   }

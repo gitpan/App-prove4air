@@ -1,6 +1,6 @@
 package App::prove4air;
 BEGIN {
-  $App::prove4air::VERSION = '0.0010';
+  $App::prove4air::VERSION = '0.0011';
 }
 # ABSTRACT: Test ActionScript (.as) with prove, Adobe Air, and tap4air
 
@@ -155,20 +155,26 @@ App::prove4air - Test ActionScript (.as) with prove, Adobe Air, and tap4air
 
 =head1 VERSION
 
-version 0.0010
+version 0.0011
 
 =head1 SYNOPSIS
 
-$ git clone git://github.com/robertkrimen/tap4air.git tap4air
-$ export BUILD_AIR="$AIR_SDK/bin/mxmlc -incremental +configname=air -compiler.source-path=tap4air/src/ -debug"
-$ export RUN_AIR="$AIR_SDK/bin/adl"
-$ prove4air test.as
-$ prove4air t/*.as
-$ prove4air t/
+    $ git clone git://github.com/robertkrimen/tap4air.git tap4air
+    $ export BUILD_AIR="$AIR_SDK/bin/mxmlc -incremental +configname=air -compiler.source-path=tap4air/src/ -debug"
+    $ export RUN_AIR="$AIR_SDK/bin/adl"
+    $ prove4air test.as
+    $ prove4air t/*.as
+    $ prove4air t/
 
 =head1 DESCRIPTION
 
 App::prove4air integrates with App::Prove and tap4air to provide prove-like TAP-testing in Adobe Air
+
+=head1 SEE ALSO
+
+L<http://github.com/robertkrimen/tap4air>
+
+L<App::Prove>
 
 =head1 AUTHOR
 
