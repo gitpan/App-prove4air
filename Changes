@@ -1,2 +1,6 @@
+0.0012 Sunday December 05 23:55:27 PST 2010:
+    - Look for !prove4air as well, $.exit() as last command by default (finish nicely)
+    - By default, use the latest air runtime (http://ns.adobe.com/air/application/2.0)
+
 0.0011 Sunday November 28 16:34:54 PST 2010:
     - Initial release

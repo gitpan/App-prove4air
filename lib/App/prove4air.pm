@@ -1,6 +1,6 @@
 package App::prove4air;
 BEGIN {
-  $App::prove4air::VERSION = '0.0011';
+  $App::prove4air::VERSION = '0.0012';
 }
 # ABSTRACT: Test ActionScript (.as) with prove, Adobe Air, and tap4air
 
@@ -75,7 +75,7 @@ sub test {
     my ( @content, @import_content, @test_content );
     if ( ! -s $test{ script } || $test{ script }->stat->mtime < $script->stat->mtime ) {
         @content = $script->slurp;
-        if ( $content[ 0 ] =~ m/^\s*\/\/\s*!tap4air\b/ ) {
+        if ( $content[ 0 ] =~ m/^\s*\/\/\s*!(?:tap4air|prove4air)\b/ ) {
             my $split = -1;
             my $found = 0;
             for ( @content ) {
@@ -95,6 +95,10 @@ sub test {
             }
         }
 
+        my $xmlns;
+        $xmlns = "http://ns.adobe.com/air/application/1.5";
+        $xmlns = "http://ns.adobe.com/air/application/2.0";
+
         if ( @test_content ) {
             $test{ script }->openw->print( <<_END_ );
 package {
@@ -109,6 +113,7 @@ import flash.desktop.NativeApplication;
         public function test() {
 var \$:* = Test.singleton();
 @{[ join '', @test_content ]}
+\$.exit();
         }
     }
 }
@@ -116,7 +121,7 @@ _END_
 
             $test{ xml }->openw->print( <<_END_ );
 <?xml version="1.0" encoding="UTF-8"?>
-<application xmlns="http://ns.adobe.com/air/application/1.5">
+<application xmlns="$xmlns">
     <id>test</id>
     <version>0.0</version>
     <filename>test</filename>
@@ -155,7 +160,7 @@ App::prove4air - Test ActionScript (.as) with prove, Adobe Air, and tap4air
 
 =head1 VERSION
 
-version 0.0011
+version 0.0012
 
 =head1 SYNOPSIS
 
