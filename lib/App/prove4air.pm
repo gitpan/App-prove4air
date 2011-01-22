@@ -1,6 +1,6 @@
 package App::prove4air;
 BEGIN {
-  $App::prove4air::VERSION = '0.0012';
+  $App::prove4air::VERSION = '0.0013';
 }
 # ABSTRACT: Test ActionScript (.as) with prove, Adobe Air, and tap4air
 
@@ -11,26 +11,33 @@ use Path::Class;
 use File::Temp qw/ tempdir /;
 use File::Copy qw/ copy /;
 use IPC::System::Simple();
-use Getopt::Long qw/ GetOptions /;
+use Getopt::Long qw/ GetOptions :config pass_through /;
 
 sub run {
     my $self = shift;
     my @arguments = @_;
 
-    my $build_air = $ENV{ BUILD_AIR } or do {
+    my ( $build_air, $run_air, $exit );
+    $build_air = $ENV{ BUILD_AIR } or do {
         print STDERR <<_END_;
-Missing \$BUILD_AIR
-# \$AIR_SDK/bin/mxmlc -incremental +configname=air -compiler.source-path=src/ -debug
+*** Missing \$BUILD_AIR, try:
+# BUILD_AIR=\$AIR_SDK/bin/mxmlc -incremental +configname=air -compiler.source-path=src/ -debug
 _END_
-        exit -1;
+        $build_air = '';
+        $exit = 1
     };
-    my $run_air = $ENV{ RUN_AIR } or do {
+    $run_air = $ENV{ RUN_AIR } or do {
         print STDERR <<_END_;
-Missing \$RUN_AIR
-# \$AIR_SDK/bin/adl
+*** Missing \$RUN_AIR, try:
+# RUN_AIR=AIR_SDK/bin/adl
 _END_
-        exit -1;
+        $run_air = '';
+        $exit = 1
     };
+
+    if ( $exit ) {
+        exit 64;
+    }
 
     my ( $exec );
     $exec = $ENV{TAP_VERSION} ? 1 : 0;
@@ -51,7 +58,7 @@ _END_
         my $prove = App::Prove->new;
         $prove->process_args( @arguments );
         $prove->{exec} ||= "$0 --exec";
-        $prove->{extensions} ||= [qw/ .as /];
+        $prove->{extension} ||= '.t.as';
         $prove->run;
     }
 }
@@ -61,7 +68,7 @@ sub test {
     my $script = shift;
     my %context = @_;
 
-    die "Missing test (.as) script" unless defined $script && length $script;
+    die "*** Missing test (.t.as) script" unless defined $script && length $script;
 
     $script = file $script;
 
@@ -133,7 +140,7 @@ _END_
         }
         else {
             my $xml = $script->parent->file( 'test.xml' );
-            die "Missing .xml file" unless -s $xml;
+            die "*** Missing .xml file" unless -s $xml;
 
             copy "$xml", "$test{ xml }" or die "Failed copy => $xml";
 
@@ -160,20 +167,58 @@ App::prove4air - Test ActionScript (.as) with prove, Adobe Air, and tap4air
 
 =head1 VERSION
 
-version 0.0012
+version 0.0013
 
 =head1 SYNOPSIS
 
     $ git clone git://github.com/robertkrimen/tap4air.git tap4air
     $ export BUILD_AIR="$AIR_SDK/bin/mxmlc -incremental +configname=air -compiler.source-path=tap4air/src/ -debug"
     $ export RUN_AIR="$AIR_SDK/bin/adl"
-    $ prove4air test.as
-    $ prove4air t/*.as
+
+    # Run against every .t.as in t/
     $ prove4air t/
 
 =head1 DESCRIPTION
 
 App::prove4air integrates with App::Prove and tap4air to provide prove-like TAP-testing in Adobe Air
+
+=head1 An example test file
+
+    // !prove4air
+    // ---
+    $.ok( 1, 'ok' );
+    $.equal( 1, 1, 'equal' );
+    $.unequal( 1, 2, 'unequal' );
+    $.like( 'Xyzzy', /yzzy/, 'like' );
+    $.unlike( 'Xyzzy', /Y/, 'unlike' );
+
+=head1 An example test with an import
+
+    // !prove4air
+    import com.example.Example;
+    // ---
+    $.ok( 1, 'ok' );
+    $.equal( 1, 1, 'equal' );
+
+=head1 A test example in another (more traditional) style
+
+    package {
+        import yzzy.tap4air.Test;
+        import mx.core.UIComponent;
+        import flash.desktop.NativeApplication;
+
+        public class test extends UIComponent {
+
+            public function test() {
+                Test.ok( 1, 'ok' );
+                Test.equal( 1, 1, 'equal' );
+                Test.unequal( 1, 2, 'unequal' );
+                Test.like( 'Xyzzy', /yzzy/, 'like' );
+                Test.unlike( 'Xyzzy', /Y/, 'unlike' );
+                Test.exit();
+            }
+        }
+    }
 
 =head1 SEE ALSO
 
@@ -187,7 +232,7 @@ Robert Krimen <robertkrimen@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Robert Krimen.
+This software is copyright (c) 2011 by Robert Krimen.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

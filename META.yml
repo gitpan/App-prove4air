@@ -18,4 +18,4 @@ requires:
   Getopt::Long: 0
   IPC::System::Simple: 0
   Path::Class: 0
-version: 0.0012
+version: 0.0013
